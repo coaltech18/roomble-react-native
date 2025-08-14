@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, TextInput, StatusBar } from 'react-native';
 import { useTheme } from '@/theme/useTheme';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
@@ -17,6 +17,7 @@ import {
 } from '@/redux/slices/filtersSlice';
 import Slider from '@react-native-community/slider';
 import { BANGALORE_AREAS, METRO_LINES } from '@/config/areas';
+import { PageTransition } from '@/components/PageTransition';
 
 const Chip: React.FC<{ label: string; selected: boolean; onPress: () => void; colors: ReturnType<typeof useTheme>['colors'] }> = ({
   label,
@@ -44,7 +45,7 @@ const Chip: React.FC<{ label: string; selected: boolean; onPress: () => void; co
 export const FiltersScreen = () => {
   const dispatch = useDispatch();
   const filters = useSelector((s: RootState) => s.filters);
-  const { colors, typography } = useTheme();
+  const { colors, typography, shadows } = useTheme();
   const [areaSearch, setAreaSearch] = useState('');
 
   // Safety check - if filters is undefined, return early
@@ -82,7 +83,11 @@ export const FiltersScreen = () => {
   );
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: colors.background }} contentContainerStyle={{ padding: 16 }}>
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
+      <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
+      
+      <PageTransition>
+        <ScrollView contentContainerStyle={{ padding: 16 }}>
       <Text style={[typography.heading]}>Filters</Text>
       <Text style={{ marginTop: 12, color: colors.textSecondary }}>Budget Range (₹{budgetRange[0].toLocaleString()} - ₹{budgetRange[1].toLocaleString()})</Text>
       <View style={{ marginVertical: 8 }}>
@@ -289,7 +294,9 @@ export const FiltersScreen = () => {
       <TouchableOpacity onPress={() => dispatch(resetFilters())} style={{ marginTop: 8, backgroundColor: colors.coral, padding: 12, borderRadius: 10, alignItems: 'center' }}>
         <Text style={{ color: '#fff', fontWeight: '700' }}>Reset Filters</Text>
       </TouchableOpacity>
-    </ScrollView>
+        </ScrollView>
+      </PageTransition>
+    </View>
   );
 };
 

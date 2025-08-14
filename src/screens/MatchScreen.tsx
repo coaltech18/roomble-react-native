@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { View, Text, ActivityIndicator, Alert, Dimensions } from 'react-native';
+import { View, Text, ActivityIndicator, Alert, Dimensions, StatusBar, SafeAreaView } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Swiper from 'react-native-deck-swiper';
 import { useTheme } from '@/theme/useTheme';
 import { fetchPotentialMatches } from '@/services/matchingService';
@@ -11,6 +12,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
 import ConfettiCannon from 'react-native-confetti-cannon';
+import { PageTransition } from '@/components/PageTransition';
 
 type Card = { 
   id: string; 
@@ -92,6 +94,7 @@ export const MatchScreen = () => {
   const { colors, typography, shadows } = useTheme();
   const [fireConfetti, setFireConfetti] = useState(false);
   const { width, height } = Dimensions.get('window');
+  const insets = useSafeAreaInsets();
   const appliedFilters = useSelector((state: RootState) => state.filters.appliedFilters);
 
   useEffect(() => {
@@ -128,18 +131,22 @@ export const MatchScreen = () => {
   }, [appliedFilters]);
 
   return (
-    <LinearGradient colors={[colors.background, colors.surface]} style={{ flex: 1, padding: 16 }}>
-      {loading ? (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <ActivityIndicator color={colors.primary} />
-        </View>
-      ) : cards.length === 0 ? (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={{ color: colors.textSecondary }}>
-            No more profiles. Please check again later.
-          </Text>
-        </View>
-      ) : (
+    <LinearGradient colors={[colors.background, colors.surface]} style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
+        
+        <PageTransition>
+        {loading ? (
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <ActivityIndicator color={colors.primary} />
+          </View>
+        ) : cards.length === 0 ? (
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ color: colors.textSecondary }}>
+              No more profiles. Please check again later.
+            </Text>
+          </View>
+        ) : (
         <Swiper
         ref={swiperRef}
         cards={cards}
@@ -149,7 +156,8 @@ export const MatchScreen = () => {
             style={{
               borderRadius: 16,
               padding: 20,
-              height: 480,
+              // Ensure card height adapts to screen minus safe areas and bottom actions
+              height: Math.min(520, height - insets.top - insets.bottom - 200),
               ...shadows.card,
               borderWidth: 2,
               borderColor: card?.mutualPreference ? colors.primary : colors.primary + '20'
@@ -283,10 +291,10 @@ export const MatchScreen = () => {
         backgroundColor={colors.background}
         cardIndex={0}
         stackSize={3}
-      />
-      )}
-      {!loading && (
-        <View style={{ position: 'absolute', bottom: 24, left: 0, right: 0, alignItems: 'center' }}>
+              />
+        )}
+        {!loading && (
+        <View style={{ position: 'absolute', bottom: Math.max(16, insets.bottom + 8), left: 0, right: 0, alignItems: 'center' }}>
           <TouchableOpacity
             onPress={() => {
               dispatch(consumeSuperLike());
@@ -309,11 +317,13 @@ export const MatchScreen = () => {
       {fireConfetti && (
         <ConfettiCannon
           count={80}
-          origin={{ x: width / 2, y: height }}
+            origin={{ x: width / 2, y: height - insets.bottom }}
           fadeOut
           autoStart
         />
       )}
+        </PageTransition>
+      </SafeAreaView>
     </LinearGradient>
   );
 };
