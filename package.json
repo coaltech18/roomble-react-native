@@ -13,7 +13,13 @@
     "ngrok:start": "ngrok http 4000",
     "ngrok:test": "node test-ngrok.js",
     "server:start": "cd server && npm run dev",
-    "dev:full": "concurrently \"npm run server:start\" \"npm run ngrok:start\""
+    "dev:full": "concurrently \"npm run server:start\" \"npm run ngrok:start\"",
+    "deploy:check": "node deploy-to-render.js",
+    "deploy:render": "echo 'Follow RENDER_DEPLOYMENT.md for detailed instructions' && node deploy-to-render.js",
+    "deploy:mobile": "node deploy-mobile.js",
+    "build:android": "eas build --profile preview --platform android",
+    "build:ios": "eas build --profile preview --platform ios",
+    "build:all": "eas build --profile preview --platform all"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",

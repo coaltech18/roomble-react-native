@@ -11,7 +11,7 @@ import { router as chatsRouter } from './routes/chats';
 
 const app = express();
 
-// Configure CORS for ngrok and development
+// Configure CORS for production and development
 app.use(cors({
   origin: [
     'http://localhost:3000',
@@ -21,7 +21,12 @@ app.use(cors({
     'https://*.ngrok.io',
     'https://*.ngrok-free.app',
     'exp://localhost:8081',
-    'exp://localhost:8082'
+    'exp://localhost:8082',
+    // Add your Render domain here after deployment
+    'https://*.onrender.com',
+    // Add your Expo app domains
+    'exp://*',
+    'https://expo.dev'
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
