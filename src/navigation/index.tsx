@@ -11,7 +11,6 @@ import * as Haptics from 'expo-haptics';
 
 import { AuthScreen } from '@/screens/AuthScreen';
 import { OnboardingScreen } from '@/screens/OnboardingScreen';
-import { RegistrationScreen } from '@/screens/RegistrationScreen';
 import { MatchScreen } from '@/screens/MatchScreen';
 import { ChatListScreen } from '@/screens/ChatListScreen';
 import { ChatScreen } from '@/screens/ChatScreen';
@@ -100,7 +99,6 @@ export const RootNavigator = () => {
           <>
             <Stack.Screen name="Auth" component={AuthScreen} />
             <Stack.Screen name="Onboarding" component={OnboardingScreen} />
-            <Stack.Screen name="Register" component={RegistrationScreen} />
           </>
         )}
       </Stack.Navigator>

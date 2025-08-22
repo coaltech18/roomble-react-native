@@ -11,7 +11,22 @@ import { router as chatsRouter } from './routes/chats';
 
 const app = express();
 
-app.use(cors());
+// Configure CORS for ngrok and development
+app.use(cors({
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:8081',
+    'http://localhost:8082',
+    'https://ngrok.io',
+    'https://*.ngrok.io',
+    'https://*.ngrok-free.app',
+    'exp://localhost:8081',
+    'exp://localhost:8082'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
 app.use(express.json());
 app.use(morgan('dev'));
 

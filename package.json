@@ -8,7 +8,12 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "backend:start": "cd backend && func start",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "ngrok:setup": "node setup-ngrok.js",
+    "ngrok:start": "ngrok http 4000",
+    "ngrok:test": "node test-ngrok.js",
+    "server:start": "cd server && npm run dev",
+    "dev:full": "concurrently \"npm run server:start\" \"npm run ngrok:start\""
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
