@@ -100,6 +100,18 @@ export const AuthScreen = () => {
   const [occupation, setOccupation] = useState('');
   const [registerLoading, setRegisterLoading] = useState(false);
 
+  // Helper function to clear forms when switching tabs
+  const clearForms = () => {
+    setPhone('');
+    setOtp('');
+    setOtpSent(false);
+    setRegPhone('');
+    setName('');
+    setAge('');
+    setGender('');
+    setOccupation('');
+  };
+
   const onSendOtp = async () => {
     if (!/^\d{10}$/.test(phone)) {
       Alert.alert('Invalid number', 'Enter a valid 10-digit phone number');
@@ -138,11 +150,23 @@ export const AuthScreen = () => {
         dispatch(setProfile(createProfileFromUser(res.user)));
       }
     } catch (e: any) {
-      const errorMessage = e?.response?.data?.error || e?.message || 'Please try again later';
-      if (errorMessage.includes('not found')) {
-        Alert.alert('User not found', 'Please register first or check your phone number.');
+      const errorData = e?.response?.data;
+      const errorMessage = errorData?.error || e?.message || 'Please try again later';
+      
+      if (errorData?.code === 'USER_NOT_FOUND' || errorMessage.includes('not registered')) {
+        Alert.alert(
+          'Phone Number Not Registered', 
+          'This phone number is not registered. Please use the "Sign Up" tab to create an account first.',
+          [
+            { text: 'OK', onPress: () => {
+              // Clear the form and switch to registration tab
+              clearForms();
+              setActiveTab('register');
+            }}
+          ]
+        );
       } else {
-        Alert.alert('Verification failed', errorMessage);
+        Alert.alert('Login Failed', errorMessage);
       }
     } finally {
       setLoginLoading(false);
@@ -175,7 +199,24 @@ export const AuthScreen = () => {
       
       Alert.alert('Success', 'Registration successful! Welcome to Roomble.');
     } catch (e: any) {
-      Alert.alert('Registration failed', e?.response?.data?.error || e?.message || 'Please try again later');
+      const errorData = e?.response?.data;
+      const errorMessage = errorData?.error || e?.message || 'Please try again later';
+      
+      if (errorMessage.includes('already registered')) {
+        Alert.alert(
+          'Phone Number Already Registered', 
+          'This phone number is already registered. Please use the "Sign In" tab to log in.',
+          [
+            { text: 'OK', onPress: () => {
+              // Clear the form and switch to login tab
+              clearForms();
+              setActiveTab('login');
+            }}
+          ]
+        );
+      } else {
+        Alert.alert('Registration Failed', errorMessage);
+      }
     } finally {
       setRegisterLoading(false);
     }
@@ -481,7 +522,10 @@ export const AuthScreen = () => {
               height: isTablet ? 56 : 48
             }}>
               <TouchableOpacity
-                onPress={() => setActiveTab('login')}
+                onPress={() => {
+                  clearForms();
+                  setActiveTab('login');
+                }}
                 style={{
                   flex: 1,
                   paddingVertical: spacing.md,
@@ -502,7 +546,10 @@ export const AuthScreen = () => {
               </TouchableOpacity>
 
               <TouchableOpacity
-                onPress={() => setActiveTab('register')}
+                onPress={() => {
+                  clearForms();
+                  setActiveTab('register');
+                }}
                 style={{
                   flex: 1,
                   paddingVertical: spacing.md,
@@ -545,7 +592,10 @@ export const AuthScreen = () => {
                 }
                 <Text
                   style={{ color: colors.primary, fontWeight: '600' }}
-                  onPress={() => setActiveTab(activeTab === 'login' ? 'register' : 'login')}
+                  onPress={() => {
+                    clearForms();
+                    setActiveTab(activeTab === 'login' ? 'register' : 'login');
+                  }}
                 >
                   {activeTab === 'login' ? 'Sign Up' : 'Sign In'}
                 </Text>

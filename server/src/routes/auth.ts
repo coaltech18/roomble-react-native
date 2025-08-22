@@ -67,6 +67,7 @@ router.post('/register-phone', async (req, res) => {
     
     // Check if user already exists with this phone number
     const existingUser = await UserModel.findOne({ phone: body.phone });
+    console.log(`Registration attempt for phone: ${body.phone}, Already exists: ${!!existingUser}`);
     if (existingUser) {
       return res.status(409).json({ error: 'Phone number already registered' });
     }
@@ -129,10 +130,14 @@ router.post('/verify-otp', async (req, res) => {
       return res.status(400).json({ error: 'Invalid OTP format' });
     }
     
-    // Find user by phone
+    // Find user by phone - this is the key validation
     const user = await UserModel.findOne({ phone });
+    console.log(`Login attempt for phone: ${phone}, User found: ${!!user}`);
     if (!user) {
-      return res.status(404).json({ error: 'User not found. Please register first.' });
+      return res.status(401).json({ 
+        error: 'Phone number not registered. Please register first before logging in.',
+        code: 'USER_NOT_FOUND'
+      });
     }
 
     const token = jwt.sign({ id: user._id.toString() }, process.env.JWT_SECRET || 'dev_secret_change_me', {
@@ -152,7 +157,7 @@ router.post('/verify-otp', async (req, res) => {
       }
     });
   } catch (e: any) {
-    return res.status(400).json({ message: e?.message || 'Invalid phone/otp' });
+    return res.status(400).json({ error: e?.message || 'Invalid phone/otp' });
   }
 });
 
