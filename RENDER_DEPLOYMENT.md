@@ -47,6 +47,9 @@ Build Command: npm install && npm run build
 Start Command: npm start
 ```
 
+**⚠️ CRITICAL: Make sure "Root Directory" is set to "server"**
+This tells Render to use the server/package.json file which contains the build script.
+
 **Alternative Build Commands (if the above fails):**
 ```
 # Option 1: Simple install only
@@ -57,6 +60,9 @@ Build Command: npm install && npx tsc
 
 # Option 3: Using the build script
 Build Command: chmod +x build.sh && ./build.sh
+
+# Option 4: If Root Directory is not working
+Build Command: cd server && npm install && npm run build
 ```
 
 ### 2.4 Set Environment Variables
@@ -127,10 +133,11 @@ eas build --platform ios
 ## 🔍 Troubleshooting
 
 ### Build Failures:
-1. **"npm run" error** - Try alternative build commands above
-2. **TypeScript compilation fails** - Check for syntax errors in src/
-3. **Missing dependencies** - Verify package.json is complete
-4. **Permission errors** - Use `npm install` only as build command
+1. **"Missing script: build"** - Make sure "Root Directory" is set to "server"
+2. **"npm run" error** - Try alternative build commands above
+3. **TypeScript compilation fails** - Check for syntax errors in src/
+4. **Missing dependencies** - Verify package.json is complete
+5. **Permission errors** - Use `npm install` only as build command
 
 ### Common Issues:
 1. **Build fails** - Check environment variables

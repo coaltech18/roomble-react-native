@@ -19,7 +19,8 @@
     "deploy:mobile": "node deploy-mobile.js",
     "build:android": "eas build --profile preview --platform android",
     "build:ios": "eas build --profile preview --platform ios",
-    "build:all": "eas build --profile preview --platform all"
+    "build:all": "eas build --profile preview --platform all",
+    "build": "cd server && npm run build"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
