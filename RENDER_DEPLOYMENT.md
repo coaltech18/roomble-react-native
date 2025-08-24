@@ -47,6 +47,18 @@ Build Command: npm install && npm run build
 Start Command: npm start
 ```
 
+**Alternative Build Commands (if the above fails):**
+```
+# Option 1: Simple install only
+Build Command: npm install
+
+# Option 2: With explicit TypeScript build
+Build Command: npm install && npx tsc
+
+# Option 3: Using the build script
+Build Command: chmod +x build.sh && ./build.sh
+```
+
 ### 2.4 Set Environment Variables
 In Render dashboard, add these:
 ```
@@ -114,11 +126,23 @@ eas build --platform ios
 
 ## 🔍 Troubleshooting
 
+### Build Failures:
+1. **"npm run" error** - Try alternative build commands above
+2. **TypeScript compilation fails** - Check for syntax errors in src/
+3. **Missing dependencies** - Verify package.json is complete
+4. **Permission errors** - Use `npm install` only as build command
+
 ### Common Issues:
 1. **Build fails** - Check environment variables
 2. **CORS errors** - Verify CORS configuration
 3. **Database connection** - Check MongoDB Atlas settings
 4. **JWT errors** - Verify JWT_SECRET is set
+
+### Build Debugging Steps:
+1. **Check Render logs** for specific error messages
+2. **Test build locally**: `cd server && npm install && npm run build`
+3. **Verify TypeScript**: `npx tsc --noEmit`
+4. **Check file structure**: Ensure all imports are correct
 
 ### Useful Commands:
 ```bash
