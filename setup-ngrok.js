@@ -29,7 +29,7 @@ function updateEnvFile(ngrokUrl) {
     
     // Update the ngrok URL
     envContent = envContent.replace(
-      /EXPO_PUBLIC_API_BASE_URL=https:\/\/.*\.ngrok\.io/g,
+      /EXPO_PUBLIC_API_BASE_URL=https:\/\/.*\.ngrok\.(io|free\.app)/g,
       `EXPO_PUBLIC_API_BASE_URL=${ngrokUrl}`
     );
     
@@ -45,10 +45,10 @@ function updateEnvFile(ngrokUrl) {
 const ngrokUrl = process.argv[2];
 
 if (ngrokUrl) {
-  if (ngrokUrl.includes('ngrok.io')) {
+  if (ngrokUrl.includes('ngrok.io') || ngrokUrl.includes('ngrok-free.app')) {
     updateEnvFile(ngrokUrl);
   } else {
-    console.log('❌ Please provide a valid ngrok URL (should contain ngrok.io)');
+    console.log('❌ Please provide a valid ngrok URL (should contain ngrok.io or ngrok-free.app)');
     console.log('Usage: node setup-ngrok.js https://your-url.ngrok.io');
   }
 } else {
